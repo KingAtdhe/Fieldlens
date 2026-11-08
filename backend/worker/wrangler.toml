@@ -1,0 +1,22 @@
+name = "fieldlens-api"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Secrets (set with `npx wrangler secret put <NAME>`):
+#   ANTHROPIC_API_KEY  — required
+#   APP_TOKEN          — optional; if set, the app must send it as x-fieldlens-token
+
+[vars]
+MODEL = "claude-sonnet-5-5"
+# Per device, per hour. Only enforced when the RATE_KV binding below exists.
+RATE_LIMIT_PER_HOUR = "40"
+ALLOWED_ORIGINS = ""
+
+# Optional: create with `npx wrangler kv namespace create RATE_KV`, then paste the id here.
+# [[kv_namespaces]]
+# binding = "RATE_KV"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+[observability]
+enabled = true

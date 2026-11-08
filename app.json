@@ -1,25 +1,92 @@
 {
   "expo": {
-    "name": "fieldlens",
+    "name": "Fieldlens",
     "slug": "fieldlens",
     "version": "1.0.0",
+    "scheme": "fieldlens",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F3EEE4"
+    },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "eu.fieldlens.app",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Fieldlens uses the camera to read products, labels, documents and objects you point it at.",
+        "NSPhotoLibraryUsageDescription": "Fieldlens can read a photo from your library instead of the camera.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "eu.fieldlens.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#F3EEE4",
         "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "permissions": ["android.permission.CAMERA"],
+      "predictiveBackGestureEnabled": true,
+      "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-localization",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Fieldlens uses the camera to read products, labels, documents and objects you point it at."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Fieldlens can read a photo from your library instead of the camera."
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Fraunces_400Regular.ttf",
+            "./assets/fonts/Fraunces_400Regular_Italic.ttf",
+            "./assets/fonts/Fraunces_600SemiBold.ttf",
+            "./assets/fonts/Fraunces_700Bold.ttf",
+            "./assets/fonts/IBMPlexSans_400Regular.ttf",
+            "./assets/fonts/IBMPlexSans_500Medium.ttf",
+            "./assets/fonts/IBMPlexSans_600SemiBold.ttf",
+            "./assets/fonts/IBMPlexMono_400Regular.ttf",
+            "./assets/fonts/IBMPlexMono_500Medium.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#F3EEE4",
+          "dark": { "backgroundColor": "#14120E" }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "apiBaseUrl": "https://fieldlens-api.YOUR-SUBDOMAIN.workers.dev",
+      "appToken": "",
+      "eas": { "projectId": "" }
     }
   }
 }
