@@ -73,7 +73,10 @@ jobs:
           python3 scripts/android-release-signing.py
       - name: Build release
         working-directory: android
-        run: ./gradlew :app:bundleRelease :app:assembleRelease --no-daemon
+        run: |
+          ./gradlew :app:bundleRelease --no-daemon
+          ./gradlew :app:assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
+          mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/fieldlens-arm64.apk
       - uses: actions/upload-artifact@v4
         with:
           name: fieldlens-android
