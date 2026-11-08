@@ -1,4 +1,4 @@
-import type { ModeId } from "../../../shared/schema";
+import type { ModeId } from "./schema";
 
 const COMMON = `You are the reading engine inside Fieldlens, a camera app. The user photographed something and chose a mode. Produce one structured reading by calling the \`deliver_reading\` tool exactly once.
 

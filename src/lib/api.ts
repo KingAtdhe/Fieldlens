@@ -4,13 +4,10 @@ import { isAnalysis } from "@shared/schema";
 import Constants from "expo-constants";
 import { getApiBaseUrl, getDeviceId } from "./config";
 
-export class ApiError extends Error {
-  code: ErrorResponse["error"]["code"] | "network" | "timeout" | "not_configured";
-  constructor(code: ApiError["code"], message: string) {
-    super(message);
-    this.code = code;
-  }
-}
+import { ApiError } from "./errors";
+import { analyzeDirect, getDirectKey } from "./direct";
+
+export { ApiError };
 
 const TIMEOUT_MS = 45_000;
 
@@ -27,12 +24,19 @@ export async function analyzeImage(params: {
   imageBase64: string;
   note?: string;
 }): Promise<AnalyzeResponse> {
-  const base = await getApiBaseUrl();
-  if (!base || base.includes("YOUR-SUBDOMAIN")) {
-    throw new ApiError("not_configured", "The analysis server address is not set. Open Settings and add it.");
+  const { locale, country } = deviceLocale();
+
+  // Developer mode: the user's own key on this phone, no server in between.
+  const directKey = await getDirectKey();
+  if (directKey) {
+    return analyzeDirect({ key: directKey, mode: params.mode, imageBase64: params.imageBase64, locale, country, note: params.note });
   }
 
-  const { locale, country } = deviceLocale();
+  const base = await getApiBaseUrl();
+  if (!base || base.includes("YOUR-SUBDOMAIN")) {
+    throw new ApiError("not_configured", "No analysis server and no API key set. Open Settings.");
+  }
+
   const body: AnalyzeRequest = {
     mode: params.mode,
     image: params.imageBase64,

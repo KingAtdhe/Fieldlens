@@ -6,6 +6,7 @@ import Constants from "expo-constants";
 import { useSettings } from "@/lib/settings";
 import { clearReadings } from "@/lib/history";
 import { defaultApiBaseUrl, getApiBaseUrl, setApiBaseUrl } from "@/lib/config";
+import { getDirectKey, looksLikeKey, setDirectKey } from "@/lib/direct";
 import { space, useColors } from "@/theme";
 import { Text } from "@/ui/Text";
 import { Caption, Rule } from "@/ui/primitives";
@@ -17,10 +18,32 @@ export default function SettingsScreen() {
   const { settings, update } = useSettings();
   const [apiUrl, setApiUrl] = useState("");
   const [saved, setSaved] = useState(false);
+  const [key, setKey] = useState("");
+  const [keyStored, setKeyStored] = useState(false);
+  const [keySaved, setKeySaved] = useState(false);
 
   useEffect(() => {
     getApiBaseUrl().then(setApiUrl);
+    getDirectKey().then((k) => setKeyStored(!!k));
   }, []);
+
+  const saveKey = async () => {
+    const v = key.trim();
+    if (!looksLikeKey(v)) {
+      Alert.alert("That doesn't look like an Anthropic key", "Keys start with sk-ant- and are created at console.anthropic.com.");
+      return;
+    }
+    await setDirectKey(v);
+    setKey("");
+    setKeyStored(true);
+    setKeySaved(true);
+    setTimeout(() => setKeySaved(false), 1500);
+  };
+
+  const removeKey = async () => {
+    await setDirectKey(null);
+    setKeyStored(false);
+  };
 
   const saveUrl = async () => {
     const trimmed = apiUrl.trim();
@@ -75,9 +98,48 @@ export default function SettingsScreen() {
           </Row>
         </Group>
 
-        <Group title="Server">
+        <Group title="Your own API key">
           <Text variant="small" color={colors.ink2} style={{ marginBottom: 8 }}>
-            Photos are sent to this address for analysis and are not stored there.
+            For testing on your own phone. Readings go straight to the model with this key, no server in between. Create
+            one at console.anthropic.com. The key is kept in this phone's secure storage.
+          </Text>
+          {keyStored ? (
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8 }}>
+              <Text variant="heading" color={colors.good}>
+                Key saved · direct mode on
+              </Text>
+              <Pressable onPress={removeKey} hitSlop={10}>
+                <Text variant="heading" color={colors.bad}>
+                  Remove
+                </Text>
+              </Pressable>
+            </View>
+          ) : (
+            <>
+              <TextInput
+                value={key}
+                onChangeText={setKey}
+                autoCapitalize="none"
+                autoCorrect={false}
+                secureTextEntry
+                placeholder="sk-ant-…"
+                placeholderTextColor={colors.muted}
+                style={[styles.input, { color: colors.ink, borderBottomColor: colors.ruleStrong }]}
+                onSubmitEditing={saveKey}
+                returnKeyType="done"
+              />
+              <Pressable onPress={saveKey} hitSlop={10} style={{ marginTop: 12, alignSelf: "flex-start" }}>
+                <Text variant="heading" color={keySaved ? colors.good : colors.ink}>
+                  {keySaved ? "Saved" : "Save key"}
+                </Text>
+              </Pressable>
+            </>
+          )}
+        </Group>
+
+        <Group title="Server (for release)">
+          <Text variant="small" color={colors.ink2} style={{ marginBottom: 8 }}>
+            The hosted analysis server. Used when no personal key is set. Photos are not stored there.
           </Text>
           <TextInput
             value={apiUrl}

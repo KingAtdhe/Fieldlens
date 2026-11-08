@@ -7,7 +7,7 @@ import {
   type ErrorResponse,
   type ModeId,
 } from "../../../shared/schema";
-import { READING_TOOL, systemPrompt } from "./prompts";
+import { READING_TOOL, systemPrompt } from "../../../shared/prompts";
 
 export interface Env {
   ANTHROPIC_API_KEY: string;

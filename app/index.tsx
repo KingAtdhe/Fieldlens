@@ -306,7 +306,7 @@ function describeError(err: unknown): string {
   if (err instanceof ApiError) {
     switch (err.code) {
       case "not_configured":
-        return "Analysis server not set. Add it under Settings → Server.";
+        return "No API key or server set yet. Open Settings and add your key.";
       case "network":
         return "No connection. Check your internet and try again.";
       case "timeout":
